@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity'; 
@@ -54,7 +54,11 @@ create(createProductDto: CreateProductDto) {
 
   findOne(id: number) { 
 
-    return this.products.find(product => product.id === id); 
+    const product = this.products.find(product => product.id === id);
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    return product; 
 
   } 
 
@@ -87,7 +91,7 @@ create(createProductDto: CreateProductDto) {
 
     } 
 
-    return null; 
+    throw new NotFoundException('Product not found'); 
 
   }
   remove(id: number) { 
@@ -102,6 +106,6 @@ create(createProductDto: CreateProductDto) {
 
     } 
 
-    return { deleted: false }; 
+    throw new NotFoundException('Product not found'); 
   }
 }
